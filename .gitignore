@@ -4,3 +4,4 @@ vendor/
 .vscode/
 node_modules/
 docker-compose.override.yml
+.phpunit.result.cache
