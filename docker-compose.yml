@@ -1,0 +1,27 @@
+services:
+  php:
+    image: php:8.2-cli
+    container_name: php_app
+    volumes:
+      - .:/app
+    working_dir: /app
+    depends_on:
+      - mysql
+    command: >
+      sh -c "apt-get update && apt-get install -y unzip git &&
+      curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer &&
+      docker-php-ext-install pdo pdo_mysql &&
+      composer install &&
+      php -S 0.0.0.0:8000 -t public"
+
+  mysql:
+    image: mysql:8
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: myapp
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
