@@ -19,6 +19,7 @@ use Doctrine\DBAL\DriverManager;
 use Ramsey\Uuid\Uuid;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\DBAL\Types\Type;
+use Dotenv\Dotenv;
 
 class DoctrineUserRepositoryTest extends TestCase
 {
@@ -28,16 +29,19 @@ class DoctrineUserRepositoryTest extends TestCase
 
     protected function setUp(): void
     {
+        $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ . '/../../../');
+        $dotenv->safeLoad();
+
         $config = ORMSetup::createAttributeMetadataConfiguration(
             paths: [__DIR__ . "/../../../src/Domain/User"],
             isDevMode: true
         );
 
         $connectionParams = [
-            'dbname' => 'myapp',
-            'user' => 'user',
-            'password' => 'password',
-            'host' => 'mysql_db',
+            'dbname' => $_ENV['DB_NAME'] ?? 'myapp',
+            'user' => $_ENV['DB_USER'] ?? 'user',
+            'password' => $_ENV['DB_PASSWORD'] ?? 'password',
+            'host' => $_ENV['DB_HOST'] ?? 'mysql_db',
             'driver' => 'pdo_mysql',
         ];
 
