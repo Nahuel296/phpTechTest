@@ -1,5 +1,6 @@
 services:
   php:
+    build: .
     image: php:8.2-cli
     container_name: php_app
     volumes:
