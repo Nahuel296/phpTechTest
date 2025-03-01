@@ -1,18 +1,27 @@
-.PHONY: install start test db-migrate db-seed
+.PHONY: up down logs test install
+
+ifneq (,$(wildcard .env))
+    include .env
+    export
+endif
+
+DB_NAME ?= myapp
+DB_USER ?= user
+DB_PASSWORD ?= password
+DB_HOST ?= mysql_db
+
+up:
+	docker-compose up --build -d
 
 install:
-	composer install
-	cp .env.example .env
-	php artisan key:generate
-
-start:
-	php -S localhost:8000 -t public
+	@if [ ! -f .env ]; then cp .env.example .env; fi
+	docker-compose run --rm php composer install
 
 test:
-	vendor/bin/phpunit --testdox
+	docker-compose run --rm php vendor/bin/phpunit
 
-db-migrate:
-	php bin/console doctrine:migrations:migrate
+down:
+	docker-compose down
 
-db-seed:
-	php bin/console doctrine:fixtures:load
+logs:
+	docker-compose logs -f
